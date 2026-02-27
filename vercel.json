@@ -5,8 +5,16 @@
             "destination": "/api/health.js"
         },
         {
+            "source": "/api/surveys",
+            "destination": "/api/surveys.js"
+        },
+        {
+            "source": "/api/notifications",
+            "destination": "/api/notifications.js"
+        },
+        {
             "source": "/api/(.*)",
-            "destination": "/api/index"
+            "destination": "/api/index.js"
         },
         {
             "source": "/(.*)",
