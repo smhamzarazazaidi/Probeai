@@ -2,8 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { join } from 'path';
 import { supabaseAdmin } from './src/lib/supabaseAdmin';
@@ -43,7 +41,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // We'll initialize these later in the listen block or lazily
-let io: Server;
+let io: any;
 let httpServer: any;
 
 // === AUTH MIDDLEWARE ===
@@ -627,6 +625,9 @@ async function startServer() {
   const PORT = Number(process.env.PORT) || 3000;
 
   // Initialize Socket.io only when running as a standalone server
+  const { createServer } = await import('http');
+  const { Server } = await import('socket.io');
+
   httpServer = createServer(app);
   io = new Server(httpServer, {
     cors: { origin: '*' }
