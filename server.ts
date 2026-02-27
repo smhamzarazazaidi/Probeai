@@ -27,14 +27,24 @@ async function ensureStorageBuckets() {
 }
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: { origin: '*' }
-});
-
 app.use(express.json());
 
-ensureStorageBuckets().catch(console.error);
+// === HEALTH CHECK ===
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    env: {
+      supabase_url: !!(process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL),
+      supabase_key: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      gemini_key: !!process.env.GEMINI_API_KEY
+    }
+  });
+});
+
+// We'll initialize these later in the listen block or lazily
+let io: Server;
+let httpServer: any;
 
 // === AUTH MIDDLEWARE ===
 const authenticate = async (req: any, res: any, next: any) => {
@@ -341,7 +351,7 @@ app.post('/api/surveys/:id/sessions', async (req, res) => {
 
     if (error) throw error;
 
-    io.to(id).emit('session_started', {
+    io?.to(id).emit('session_started', {
       respondent_name: respondent_name || 'Incognito',
       timestamp: new Date()
     });
@@ -365,7 +375,7 @@ app.post('/api/surveys/:id/respond', async (req, res) => {
 
     const { data: session } = await supabaseAdmin.from('sessions').select('respondent_name').eq('id', session_id).single();
 
-    io.to(surveyId).emit('new_response', {
+    io?.to(surveyId).emit('new_response', {
       respondent_name: session?.respondent_name || 'Anonymous',
       question_category: category,
       timestamp: new Date()
@@ -389,7 +399,7 @@ app.patch('/api/sessions/:id/complete', async (req, res) => {
 
     if (sErr) throw sErr;
 
-    io.to(session.survey_id).emit('session_completed', {
+    io?.to(session.survey_id).emit('session_completed', {
       respondent_name: session.respondent_name,
       timestamp: new Date()
     });
@@ -485,7 +495,7 @@ app.post('/api/surveys/:id/analyse', authenticate, async (req, res) => {
     if (aErr) throw aErr;
 
     await supabaseAdmin.from('surveys').update({ status: 'COMPLETED' }).eq('id', id);
-    io.to(id).emit('analysis_ready', { survey_id: id });
+    io?.to(id).emit('analysis_ready', { survey_id: id });
 
     res.json({ data: { analysis_id: analysis.id } });
   } catch (error: any) {
@@ -612,20 +622,29 @@ app.post('/api/notifications', authenticate, async (req: any, res) => {
   }
 });
 
-// SOCKET.IO
-io.on('connection', (socket) => {
-  socket.on('join_survey', (id) => {
-    socket.join(id);
-  });
-
-  socket.on('respondent_typing', (surveyId) => {
-    socket.to(surveyId).emit('admin_typing_view', { active: true });
-  });
-});
-
 // STATIC + SERVER START
 async function startServer() {
   const PORT = Number(process.env.PORT) || 3000;
+
+  // Initialize Socket.io only when running as a standalone server
+  httpServer = createServer(app);
+  io = new Server(httpServer, {
+    cors: { origin: '*' }
+  });
+
+  // Attach socket logic
+  io.on('connection', (socket) => {
+    socket.on('join_survey', (id) => {
+      socket.join(id);
+    });
+    socket.on('respondent_typing', (surveyId) => {
+      socket.to(surveyId).emit('admin_typing_view', { active: true });
+    });
+  });
+
+  // Background tasks
+  ensureStorageBuckets().catch(console.error);
+
   if (process.env.NODE_ENV !== 'production') {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({ server: { middlewareMode: true }, appType: 'spa' });
