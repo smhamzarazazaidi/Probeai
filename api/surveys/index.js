@@ -1,5 +1,5 @@
-import { supabaseAdmin } from './_lib/supabase.js';
-import { generateToken } from './_lib/utils.js';
+import { supabaseAdmin } from '../_lib/supabase.js';
+import { generateToken } from '../_lib/utils.js';
 
 export default async function handler(req, res) {
     // Simple auth check using Supabase getUser

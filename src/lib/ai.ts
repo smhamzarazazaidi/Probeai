@@ -22,7 +22,7 @@ export async function callAI(
         const fullPrompt = `${systemPrompt}\n\n${userMessage}`;
 
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-1.5-flash',
             contents: fullPrompt,
             config: {
                 temperature: expectJSON ? 0.3 : 0.7,
