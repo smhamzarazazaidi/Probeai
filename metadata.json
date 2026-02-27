@@ -1,0 +1,5 @@
+{
+  "name": "LockItIn",
+  "description": "A collaborative decision-making assistant that uses AI to analyze group feedback and provide clear verdicts.",
+  "requestFramePermissions": []
+}
