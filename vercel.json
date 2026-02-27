@@ -1,14 +1,6 @@
 {
     "rewrites": [
         {
-            "source": "/api/ping",
-            "destination": "/api/ping.js"
-        },
-        {
-            "source": "/api/test",
-            "destination": "/api/test"
-        },
-        {
             "source": "/api/(.*)",
             "destination": "/api/index"
         },
