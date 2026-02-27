@@ -310,7 +310,7 @@ export default function Respond() {
                 </>
               )}
             </button>
-            <p className="text-center text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-widest pt-4">Secured by InsightEngine AI</p>
+            <p className="text-center text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-widest pt-4">Secured by ProbeAI AI</p>
           </form>
         </motion.div>
       </div>

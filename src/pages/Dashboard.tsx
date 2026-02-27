@@ -111,7 +111,7 @@ export default function Dashboard() {
     const totalResponses = surveys.reduce((acc, curr) => acc + (curr.response_count || curr.sessions?.count || 0), 0);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-[#0F0F0F] text-gray-900 dark:text-white transition-colors duration-300 pb-16">
+        <div className="min-h-screen bg-white dark:bg-[#0F0F0F] text-gray-900 dark:text-white transition-colors duration-300 pb-16">
             <Header />
 
             <main className="max-w-7xl mx-auto pt-28 pb-12">

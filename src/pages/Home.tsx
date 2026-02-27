@@ -43,7 +43,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 dark:border-emerald-500/10 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-8"
           >
             <Sparkles className="size-3" />
-            Introducing Insight Engine 2.0
+            Introducing ProbeAI 2.0
           </motion.div>
 
           <motion.h1
@@ -157,7 +157,7 @@ export default function Home() {
       </section>
 
       <footer className="py-12 border-t border-gray-200 dark:border-gray-700 text-center text-gray-600 dark:text-gray-400 font-medium">
-        <p>© 2026 Insight Engine AI. Built for the future of research.</p>
+        <p>© 2026 ProbeAI AI. Built for the future of research.</p>
       </footer>
     </div>
   );

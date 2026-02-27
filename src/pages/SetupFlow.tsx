@@ -129,16 +129,22 @@ export default function SetupFlow() {
                 },
                 body: JSON.stringify(formData)
             });
-            const { data } = await res.json();
+            const json = await res.json();
+
+            if (!res.ok || json.error) {
+                throw new Error(json.error || 'Unknown server error');
+            }
+
+            const { data } = json;
 
             if (isNew) {
                 navigate(`/survey/${data.id}/setup`, { replace: true });
             }
             notify('Project details saved.', 'success');
             setStep(2);
-        } catch (err) {
-            console.error(err);
-            notify('Failed to save project details.', 'error');
+        } catch (err: any) {
+            console.error('API Error:', err);
+            notify(`Failed: ${err.message}`, 'error');
         } finally {
             setLoading(false);
         }

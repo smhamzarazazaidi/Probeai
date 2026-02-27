@@ -137,7 +137,7 @@ export default function Setup() {
       <main className="max-w-4xl mx-auto px-6 py-12">
         {/* Page Header */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-4">Structure your Insight Engine</h2>
+          <h2 className="text-3xl font-bold mb-4">Structure your ProbeAI</h2>
           <p className="text-gray-500 dark:text-gray-400">Review and refine the questions the AI will use to probe your respondents.</p>
         </div>
 
